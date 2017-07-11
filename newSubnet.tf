@@ -3,7 +3,7 @@ provider "aws" {
      shared_credentials_file = "${var.aws_creds_file}"
 }
 
-resource "aws_subnet" "testingSubnet" {
+resource "aws_subnet" "devSubnet" {
      vpc_id = "${var.aws_vpc_id}"
      cidr_block = "${var.aws_cidr_block}"
      
