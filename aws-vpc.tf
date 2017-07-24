@@ -24,6 +24,18 @@ resource "aws_vpc_peering_connection" "default2dev" {
 	auto_accept = true
 }
 
+resource "aws_route" "defaultToDev" {
+	route_table_id = "${var.aws_vpc_main_route_table_id}"
+	destination_cidr_block = "${aws_vpc.devVpc.cidr_block}"
+	vpc_peering_connection_id = "${aws_vpc_peering_connection.default2dev.id}"
+}
+
+resource "aws_route" "devToDefault" {
+        route_table_id = "${aws_vpc.devVpc.main_route_table_id}"
+        destination_cidr_block = "${var.aws_vpc_cidr_block}"
+        vpc_peering_connection_id = "${aws_vpc_peering_connection.default2dev.id}"
+}
+
 resource "aws_security_group" "devSecurityGroup" {
 	name = "devSecurityGroup"
 	description = "Security Group for dev VPC"
@@ -32,7 +44,7 @@ resource "aws_security_group" "devSecurityGroup" {
 		from_port = 22
 		to_port = 22
 		protocol = "tcp"
-		cidr_blocks = ["0.0.0.0/0"]
+		cidr_blocks = ["172.31.0.0/16"]
 	}
 
 	vpc_id = "${aws_vpc.devVpc.id}"
