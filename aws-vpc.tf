@@ -25,7 +25,7 @@ resource "aws_vpc_peering_connection" "default2dev" {
 }
 
 resource "aws_route" "defaultToDev" {
-	route_table_id = "${var.aws_vpc_main_route_table_id}"
+	route_table_id = "${var.aws_vpc_route_table_id}"
 	destination_cidr_block = "${aws_vpc.devVpc.cidr_block}"
 	vpc_peering_connection_id = "${aws_vpc_peering_connection.default2dev.id}"
 }
