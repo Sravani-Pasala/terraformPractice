@@ -1,8 +1,7 @@
 
 provider "aws" {
 	region = "${var.aws_region}"
-	shared_credentials_file = "${var.aws_creds_file}"
-	}
+}
 
 resource "aws_vpc" "devVpc" {
 	cidr_block = "${var.aws_dev_vpc_cidr_block}"
