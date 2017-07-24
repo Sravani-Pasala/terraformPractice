@@ -3,6 +3,8 @@ provider "aws" {
 	region = "${var.aws_region}"
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_vpc" "devVpc" {
 	cidr_block = "${var.aws_dev_vpc_cidr_block}"
 
@@ -13,6 +15,13 @@ resource "aws_vpc" "devVpc" {
 
 resource "aws_internet_gateway" "devVpcGateway" {
 	vpc_id = "${aws_vpc.devVpc.id}"
+}
+
+resource "aws_vpc_peering_connection" "default2dev" {
+	peer_owner_id = "${data.aws_caller_identity.current.account_id}"
+	peer_vpc_id = "${aws_vpc.devVpc.id}"
+	vpc_id = "${var.aws_vpc_id}"
+	auto_accept = true
 }
 
 resource "aws_security_group" "devSecurityGroup" {
@@ -95,3 +104,16 @@ resource "aws_instance" "publicVM" {
                 Description = "VM 3"
         }
 }
+
+output "privateVMip" {
+	value = "${aws_instance.privateVM.private_ip}"
+}
+
+output "protectedVMip" {
+        value = "${aws_instance.protectedVM.private_ip}"
+}
+
+output "publicVMip" {
+        value = "${aws_instance.publicVM.private_ip}"
+}
+
